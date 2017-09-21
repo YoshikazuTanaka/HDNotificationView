@@ -22,7 +22,11 @@
 #define LABEL_MESSAGE_FRAME                     CGRectMake(45.0f, 25.0f, [[UIScreen mainScreen] bounds].size.width - 45.0f, LABEL_MESSAGE_FRAME_HEIGHT)
 #define LABEL_MESSAGE_FRAME_WITHOUT_IMAGE       CGRectMake(5.0f, 25.0f, [[UIScreen mainScreen] bounds].size.width - 5.0f, LABEL_MESSAGE_FRAME_HEIGHT)
 
+#if 0
 #define NOTIFICATION_VIEW_SHOWING_DURATION                  7.0f    /// second(s)
+#else
+#define NOTIFICATION_VIEW_SHOWING_DURATION                  3.0f    /// second(s)
+#endif
 #define NOTIFICATION_VIEW_SHOWING_ANIMATION_TIME            0.5f    /// second(s)
 
 @implementation HDNotificationView
