@@ -9,18 +9,25 @@
 #import "HDNotificationView.h"
 
 #define NOTIFICATION_VIEW_FRAME_HEIGHT          64.0f
+#define NOTIFICATION_VIEW_FRAME_HEIGHT_X        88.0f
 
 #define LABEL_TITLE_FONT_SIZE                   14.0f
 #define LABEL_MESSAGE_FONT_SIZE                 13.0f
 
 #define IMAGE_VIEW_ICON_CORNER_RADIUS           3.0f
 #define IMAGE_VIEW_ICON_FRAME                   CGRectMake(15.0f, 8.0f, 20.0f, 20.0f)
+#define IMAGE_VIEW_ICON_FRAME_X                 CGRectMake(15.0f, 8.0f + NOTIFICATION_VIEW_FRAME_HEIGHT_X / 4, 20.0f, 20.0f)
 #define DRAG_HANDLER_FRAME                      CGRectMake([[UIScreen mainScreen] bounds].size.width/2-30,NOTIFICATION_VIEW_FRAME_HEIGHT-5,60,3)
+#define DRAG_HANDLER_FRAME_X                    CGRectMake([[UIScreen mainScreen] bounds].size.width/2-30,NOTIFICATION_VIEW_FRAME_HEIGHT_X-5,60,3)
 #define LABEL_TITLE_FRAME                       CGRectMake(45.0f, 3.0f, [[UIScreen mainScreen] bounds].size.width - 45.0f, 26.0f)
+#define LABEL_TITLE_FRAME_X                     CGRectMake(45.0f, 3.0f + NOTIFICATION_VIEW_FRAME_HEIGHT_X / 4, [[UIScreen mainScreen] bounds].size.width - 45.0f, 26.0f)
 #define LABEL_TITLE_FRAME_WITHOUT_IMAGE         CGRectMake(5.0f, 3.0f, [[UIScreen mainScreen] bounds].size.width - 5.0f, 26.0f)
+#define LABEL_TITLE_FRAME_WITHOUT_IMAGE_X       CGRectMake(5.0f, 3.0f + NOTIFICATION_VIEW_FRAME_HEIGHT_X / 4, [[UIScreen mainScreen] bounds].size.width - 5.0f, 26.0f)
 #define LABEL_MESSAGE_FRAME_HEIGHT              35.0f
 #define LABEL_MESSAGE_FRAME                     CGRectMake(45.0f, 25.0f, [[UIScreen mainScreen] bounds].size.width - 45.0f, LABEL_MESSAGE_FRAME_HEIGHT)
+#define LABEL_MESSAGE_FRAME_X                   CGRectMake(45.0f, 25.0f + NOTIFICATION_VIEW_FRAME_HEIGHT_X / 4, [[UIScreen mainScreen] bounds].size.width - 45.0f, LABEL_MESSAGE_FRAME_HEIGHT)
 #define LABEL_MESSAGE_FRAME_WITHOUT_IMAGE       CGRectMake(5.0f, 25.0f, [[UIScreen mainScreen] bounds].size.width - 5.0f, LABEL_MESSAGE_FRAME_HEIGHT)
+#define LABEL_MESSAGE_FRAME_WITHOUT_IMAGE_X     CGRectMake(5.0f, 25.0f + NOTIFICATION_VIEW_FRAME_HEIGHT_X / 4, [[UIScreen mainScreen] bounds].size.width - 5.0f, LABEL_MESSAGE_FRAME_HEIGHT)
 
 #if 0
 #define NOTIFICATION_VIEW_SHOWING_DURATION                  7.0f    /// second(s)
@@ -33,6 +40,7 @@
 
 static BOOL _isDragging;
 BOOL isVerticalPan;
+BOOL isiPhoneX ;
 
 /// -------------------------------------------------------------------------------------------
 #pragma mark - INIT
@@ -50,7 +58,9 @@ BOOL isVerticalPan;
 
 - (instancetype)init
 {
-    self = [super initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NOTIFICATION_VIEW_FRAME_HEIGHT)];
+    isiPhoneX = ([[UIScreen mainScreen] nativeBounds].size.height == 2436.0) ? YES : NO ;
+    
+    self = [super initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, (isiPhoneX == NO) ? NOTIFICATION_VIEW_FRAME_HEIGHT : NOTIFICATION_VIEW_FRAME_HEIGHT_X)];
     if (self) {
         
         /// Enable orientation tracking
@@ -87,13 +97,13 @@ BOOL isVerticalPan;
     self.multipleTouchEnabled = NO;
     self.exclusiveTouch = YES;
     
-    self.frame = CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NOTIFICATION_VIEW_FRAME_HEIGHT);
+    self.frame = CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, (isiPhoneX == NO) ? NOTIFICATION_VIEW_FRAME_HEIGHT : NOTIFICATION_VIEW_FRAME_HEIGHT_X);
     
     /// Icon
     if (!_imgIcon) {
         _imgIcon = [[UIImageView alloc] init];
     }
-    _imgIcon.frame = IMAGE_VIEW_ICON_FRAME;
+    _imgIcon.frame = (isiPhoneX == NO) ? IMAGE_VIEW_ICON_FRAME : IMAGE_VIEW_ICON_FRAME_X;
     [_imgIcon setContentMode:UIViewContentModeScaleAspectFill];
     [_imgIcon.layer setCornerRadius:IMAGE_VIEW_ICON_CORNER_RADIUS];
     [_imgIcon setClipsToBounds:YES];
@@ -105,7 +115,7 @@ BOOL isVerticalPan;
     if (!_lblTitle) {
         _lblTitle = [[UILabel alloc] init];
     }
-    _lblTitle.frame = LABEL_TITLE_FRAME;
+    _lblTitle.frame = (isiPhoneX == NO) ? LABEL_TITLE_FRAME : LABEL_TITLE_FRAME_X ;
     [_lblTitle setTextColor:[UIColor whiteColor]];
     [_lblTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:LABEL_TITLE_FONT_SIZE]];
     [_lblTitle setNumberOfLines:1];
@@ -117,7 +127,7 @@ BOOL isVerticalPan;
     if (!_lblMessage) {
         _lblMessage = [[UILabel alloc] init];
     }
-    _lblMessage.frame = LABEL_MESSAGE_FRAME;
+    _lblMessage.frame = (isiPhoneX == NO) ? LABEL_MESSAGE_FRAME : LABEL_MESSAGE_FRAME_X ;
     [_lblMessage setTextColor:[UIColor whiteColor]];
     [_lblMessage setFont:[UIFont fontWithName:@"HelveticaNeue" size:LABEL_MESSAGE_FONT_SIZE]];
     [_lblMessage setNumberOfLines:2];
@@ -132,7 +142,7 @@ BOOL isVerticalPan;
         _dragHandler = [[UIView alloc]init];
         [self addSubview:_dragHandler];
     }
-    _dragHandler.frame = DRAG_HANDLER_FRAME;
+    _dragHandler.frame = (isiPhoneX == NO) ? DRAG_HANDLER_FRAME : DRAG_HANDLER_FRAME_X ;
     _dragHandler.layer.cornerRadius = 2;
     _dragHandler.backgroundColor = [UIColor whiteColor];
     if(![_dragHandler superview]) {
@@ -148,7 +158,7 @@ BOOL isVerticalPan;
 
 }
 
-- (void)showNotificationViewWithImage:(UIImage *)image title:(NSString *)title message:(NSString *)message isAutoHide:(BOOL)isAutoHide onTouch:(void (^)())onTouch
+- (void)showNotificationViewWithImage:(UIImage *)image title:(NSString *)title message:(NSString *)message isAutoHide:(BOOL)isAutoHide onTouch:(void (^)(void))onTouch
 {
     /// Invalidate _timerHideAuto
     if (_timerHideAuto) {
@@ -165,8 +175,8 @@ BOOL isVerticalPan;
     }
     else {
         [_imgIcon setImage:nil];
-        _lblTitle.frame =LABEL_TITLE_FRAME_WITHOUT_IMAGE;
-        _lblMessage.frame = LABEL_MESSAGE_FRAME_WITHOUT_IMAGE;
+        _lblTitle.frame = (isiPhoneX == NO) ? LABEL_TITLE_FRAME_WITHOUT_IMAGE : LABEL_TITLE_FRAME_WITHOUT_IMAGE_X ;
+        _lblMessage.frame = (isiPhoneX == NO) ? LABEL_MESSAGE_FRAME_WITHOUT_IMAGE : LABEL_MESSAGE_FRAME_WITHOUT_IMAGE_X;
     }
     
     /// Title
@@ -222,7 +232,7 @@ BOOL isVerticalPan;
 {
     [self hideNotificationViewOnComplete:nil];
 }
-- (void)hideNotificationViewOnComplete:(void (^)())onComplete
+- (void)hideNotificationViewOnComplete:(void (^)(void))onComplete
 {
     if(!_isDragging) {
         [UIView animateWithDuration:NOTIFICATION_VIEW_SHOWING_ANIMATION_TIME
@@ -340,7 +350,7 @@ BOOL isVerticalPan;
 {
     [HDNotificationView showNotificationViewWithImage:image title:title message:message isAutoHide:isAutoHide onTouch:nil];
 }
-+ (void)showNotificationViewWithImage:(UIImage *)image title:(NSString *)title message:(NSString *)message isAutoHide:(BOOL)isAutoHide onTouch:(void (^)())onTouch
++ (void)showNotificationViewWithImage:(UIImage *)image title:(NSString *)title message:(NSString *)message isAutoHide:(BOOL)isAutoHide onTouch:(void (^)(void))onTouch
 {
     [[HDNotificationView sharedInstance] showNotificationViewWithImage:image title:title message:message isAutoHide:isAutoHide onTouch:onTouch];
 }
@@ -348,7 +358,7 @@ BOOL isVerticalPan;
 {
     [HDNotificationView hideNotificationViewOnComplete:nil];
 }
-+ (void)hideNotificationViewOnComplete:(void (^)())onComplete
++ (void)hideNotificationViewOnComplete:(void (^)(void))onComplete
 {
     [[HDNotificationView sharedInstance] hideNotificationViewOnComplete:onComplete];
 }
