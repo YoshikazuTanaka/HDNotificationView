@@ -58,7 +58,8 @@ BOOL isiPhoneX ;
 
 - (instancetype)init
 {
-    isiPhoneX = ([[UIScreen mainScreen] nativeBounds].size.height == 2436.0) ? YES : NO ;
+    CGFloat height = [[UIScreen mainScreen] nativeBounds].size.height;
+    isiPhoneX = (height == 2436.0) || (height == 1792.0) || (height == 2688) ? YES : NO ;
     
     self = [super initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, (isiPhoneX == NO) ? NOTIFICATION_VIEW_FRAME_HEIGHT : NOTIFICATION_VIEW_FRAME_HEIGHT_X)];
     if (self) {
